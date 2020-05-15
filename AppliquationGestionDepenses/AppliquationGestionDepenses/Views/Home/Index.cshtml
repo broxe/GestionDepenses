@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Liste des depenses";
+}
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+<h2>Index</h2>
+<div class="container">
+    <p>Application permet gestion des depenses, vous pouvez ajouter vos depenses, visualiser sous forme de graphe vos differents depenses, et encore plus.</p>
+    <a class="btn btn-outline-primary" style="margin-bottom:10px" onclick="OpenPopUp('@Url.Action("AddOrEdit","Home")')"> Nouvel Element </a>
+    <table id="tableDepenses" class="table">
+        <thead>
+            <tr>
+                <th>Date Depense</th>
+                <th>Prix En Euro</th>
+                <th>Type Depense</th>
+                <th></th>
+            </tr>
+        </thead>
+
+    </table>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" /> <!-- JQuery pr datatable -->
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>        <!-- JQuery pr datatable -->
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+        var winPopup, dataTable; 
+        $(document).ready(function () {
+            dataTable = $("#tableDepenses").DataTable({
+                "ajax": {
+                    "url": "/Home/GetData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "data": function (data) {
+                            return Date(parseInt(data.dateDepesse.substr(6)));
+                        }
+                    },
+                    { "data": "prixDepense" },
+                    { "data": "nomDepense" },
+                    {
+                        "data": "IdDepense", "render": function () {
+                            return "<a class='btn btn-primary btn-sm' style='margin-right:7px'>Edit</a><a class='btn btn-danger btn-sm'>Delete</a>";
+                        },
+                        "orderable": false,
+                        "width": "150px"
+                    }
+                ],
+                "language": {
+                    "emptyTable": "Pas de donnees disponibles"
+                }
+            });
+        });
+
+        //  Fonction ouverture du popup
+        function OpenPopUp(url) {
+            var formPopup = $('<div/>');
+            $.get(url).done(function (response) {
+                formPopup.html(response);
+
+                winPopup = formPopup.dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    title: 'POPUP Edit',
+                    height: 450,
+                    width: 500,
+                    close: function () {
+                        winPopup.dialog('destroy').remove(); 
+                    }
+                })
+
+            });
+        }
+
+        //  Fonction pour submit du formulaire
+        function SubmitFormData(form) {
+            //  Activier le validateur 
+            $.validator.unobtrusive.parse(form);
+
+            //  Si form est valide
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            winPopup.dialog('close');
+                            dataTable.ajax.reload();
+                        }
+                    }
+                });
+            }
+            
+            return false;
+        }
+
+    </script>
+}
+
+
+
+

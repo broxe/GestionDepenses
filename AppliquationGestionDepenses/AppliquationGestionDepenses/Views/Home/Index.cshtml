@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 
-<h2>Index</h2>
+<h2>Liste des Depenses</h2>
 <div class="container">
     <p>Application permet gestion des depenses, vous pouvez ajouter vos depenses, visualiser sous forme de graphe vos differents depenses, et encore plus.</p>
     <a class="btn btn-outline-primary" style="margin-bottom:10px" onclick="OpenPopUp('@Url.Action("AddOrEdit","Home")')"> Nouvel Element </a>
@@ -16,6 +16,7 @@
             <tr>
                 <th>Date Depense</th>
                 <th>Prix En Euro</th>
+                <th>Nom Depense</th>
                 <th>Type Depense</th>
                 <th></th>
             </tr>
@@ -33,7 +34,7 @@
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
-        var winPopup, dataTable; 
+        var winPopup, dataTable;
         $(document).ready(function () {
             dataTable = $("#tableDepenses").DataTable({
                 "ajax": {
@@ -49,9 +50,10 @@
                     },
                     { "data": "prixDepense" },
                     { "data": "nomDepense" },
+                    { "data": "typeDepense"},
                     {
-                        "data": "IdDepense", "render": function () {
-                            return "<a class='btn btn-primary btn-sm' style='margin-right:7px'>Edit</a><a class='btn btn-danger btn-sm'>Delete</a>";
+                        "data": "IdDepense", "render": function (data) {
+                            return "<a class='btn btn-primary btn-sm' style='margin-right:7px' onclick=OpenPopUp('@Url.Action("AddOrEdit","Home")/" + data + "')>Edit</a><a class='btn btn-danger btn-sm' onclick=Delete(" + data +")>Delete</a>";
                         },
                         "orderable": false,
                         "width": "150px"
@@ -72,11 +74,11 @@
                 winPopup = formPopup.dialog({
                     autoOpen: true,
                     resizable: false,
-                    title: 'POPUP Edit',
-                    height: 450,
+                    title: 'Ajout Nouvel Element',
+                    height: 520,
                     width: 500,
                     close: function () {
-                        winPopup.dialog('destroy').remove(); 
+                        winPopup.dialog('destroy').remove();
                     }
                 })
 
@@ -85,7 +87,7 @@
 
         //  Fonction pour submit du formulaire
         function SubmitFormData(form) {
-            //  Activier le validateur 
+            //  Activier le validateur
             $.validator.unobtrusive.parse(form);
 
             //  Si form est valide
@@ -99,12 +101,35 @@
                             winPopup.dialog('close');
                             dataTable.ajax.reload();
                         }
+                        else
+                        {
+                            alert("Erreur ajout de données !")
+                        }
                     }
                 });
             }
-            
+
             return false;
         }
+
+        function Delete(data) {
+            if(confirm('Are You Sure to Delete this Employee Record ?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete","Home")/' + data,
+                    success: function (data) {
+                        if (data.success)
+                        {
+                            dataTable.ajax.reload();
+
+                        }
+                    }
+
+                });
+            }
+        }
+
 
     </script>
 }

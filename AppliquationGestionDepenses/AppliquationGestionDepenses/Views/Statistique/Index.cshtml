@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Liste des depenses";
+}
+
+<script src="~/Scripts/Chart.min.js"></script>
+<div class="form-group">
+    <h1>Responsive Columns</h1>
+    <p>Resize the browser window to see the effect.</p>
+    <p>The columns will automatically stack on top of each other when the screen is less than 576px wide.</p>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4" style="background-color:lavender;">
+                <div id="chartContainerPie" class="containerPie">
+                    <canvas id="myChart"> </canvas>
+                </div>
+            </div>
+            <div class="col-sm-4" style="background-color:lavenderblush;">.col-sm-3</div>
+            <div class="col-sm-4" style="background-color:lavender;">.col-sm-3</div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6" style="background-color:lavenderblush;">
+                <canvas id="myChart2" width="400" height="400"></canvas>
+            </div>
+            <div class="col-sm-6" style="background-color:lavender;">.col-sm-3</div>
+        </div>
+    </div>
+
+</div>
+
+        <script>
+            $(document).ready(function () {
+                var labelText = ["Courses", "Shopping", "Domicile", "Voiture", "Voyage", "Autre"];
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Statistique/GetStat",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        var dataT = {
+                            
+                            labels: labelText,
+                            datasets: [{
+                                label: "Test Data",
+                                data: [data['data']['courses'], data['data']['shopping'], data['data']['domicile'], data['data']['voiture'], data['data']['voyage'], data['data']['autre']],
+                                fill: false,
+                                backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)"],
+                                borderColor: ["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)"],
+                                borderWidth: 1
+                            }]
+                        };
+                        var ctx = $("#myChart").get(0).getContext("2d");
+                        var myNewChart = new Chart(ctx, {
+                            type: 'bar',
+                            xAxisID: "IDIDIDI",
+                            data: dataT,
+                            options: {
+                                responsive: true,
+                                title: { display: true, text: 'Suivi Par Type' },
+                                legend: { position: 'bottom' },
+                                scales: {
+                                    xAxes: [{ gridLines: { display: true }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                                    yAxes: [{ gridLines: { display: true }, display: true, scaleLabel: { display: false, labelString: '' }, ticks: { stepSize: 50, beginAtZero: true } }]
+                                },
+                            }
+                        });
+                    }
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Statistique/GestStatParPrix",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        var ctx2 = document.getElementById("myChart2");
+                        var myChart2 = new Chart(ctx2, {
+                            type: 'pie',
+                            data: {
+                                labels: labelText,
+                                datasets: [{
+                                    label: '# of Tomatoes',
+                                    data: [data['data']['courses'], data['data']['shopping'], data['data']['domicile'], data['data']['voiture'], data['data']['voyage'], data['data']['autre']],
+                                    backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)"],
+                                    borderColor: ["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)"],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                //cutoutPercentage: 40,
+                                title: { display: true, text: 'Total Prix Par Type' },
+                                responsive: false,
+
+                            }
+                        });
+                    }
+                });
+
+
+
+            });
+
+        </script>

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DatabaseDepensesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DatabaseDepensesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="TDepenses">
           <Key>
             <PropertyRef Name="IdDepense" />
@@ -13,12 +13,12 @@
           <Property Name="dateDepesse" Type="datetime" Nullable="false" />
           <Property Name="prixDepense" Type="float" Nullable="false" />
           <Property Name="nomDepense" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="typeDepense" Type="nchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="DatabaseDepensesModelStoreContainer">
           <EntitySet Name="TDepenses" EntityType="Self.TDepenses" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DatabaseDepensesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -30,6 +30,7 @@
           <Property Name="dateDepesse" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="prixDepense" Type="Double" Nullable="false" />
           <Property Name="nomDepense" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="typeDepense" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityContainer Name="DatabaseDepensesEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="TDepenses" EntityType="Self.TDepenses" />
@@ -43,6 +44,7 @@
           <EntitySetMapping Name="TDepenses">
             <EntityTypeMapping TypeName="DatabaseDepensesModel.TDepenses">
               <MappingFragment StoreEntitySet="TDepenses">
+                <ScalarProperty Name="typeDepense" ColumnName="typeDepense" />
                 <ScalarProperty Name="IdDepense" ColumnName="IdDepense" />
                 <ScalarProperty Name="dateDepesse" ColumnName="dateDepesse" />
                 <ScalarProperty Name="prixDepense" ColumnName="prixDepense" />

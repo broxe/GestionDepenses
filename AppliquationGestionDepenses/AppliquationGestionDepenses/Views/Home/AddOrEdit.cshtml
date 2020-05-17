@@ -5,12 +5,12 @@
 
 <!DOCTYPE html>
 
-@using (Html.BeginForm("AddOrEditFct", "Home", FormMethod.Post, new { onsubmit = "return SubmitFormData(this)"} ))
+@using (Html.BeginForm("AddOrEdit", "Home", FormMethod.Post, new { onsubmit = "return SubmitFormData(this)"} ))
 {
     @Html.HiddenFor(model => model.IdDepense)
 <div class="form-group">
     <label class = "control-label">Date :</label>
-    @Html.EditorFor(model => model.dateDepesse, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.Editor("DateDepense", new { htmlAttributes = new { @class = "form-control" } })
     
 </div>
 <div class="form-group">
@@ -19,11 +19,25 @@
     @Html.ValidationMessageFor(model => model.prixDepense)
 </div>
 <div class="form-group">
-    <label class="control-label">Type Depense :</label>
+    <label class="control-label">Nom Depense :</label>
     <div class="input-group">
         @Html.EditorFor(model => model.nomDepense, new { htmlAttributes = new { @class = "form-control" } })
     </div>
     @Html.ValidationMessageFor(model => model.nomDepense)
+</div>
+
+<div class="form-group">
+    <label class="control-label">Type Depense :</label>
+    @Html.DropDownList("TypeDepense", new List<SelectListItem>
+    {
+        new SelectListItem{ Text = "Courses", Value="courses"},
+        new SelectListItem{ Text = "Shopping", Value="shopping"},
+        new SelectListItem{ Text = "Domicile", Value="domicile"},
+        new SelectListItem{ Text = "Voyage", Value="voyage"},
+        new SelectListItem{ Text = "Voiture", Value="voiture"},
+        new SelectListItem{ Text = "Autres", Value="autres"}
+    }
+    , "Type De Depense", new { @class = "form-control" });
 </div>
  <div class="form-group">
      <input type="submit" value="Valider" class="btn btn-primary" />
